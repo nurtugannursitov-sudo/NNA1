@@ -1,0 +1,6 @@
+x = int(input())
+print((x*5<35) and (x*3<27))
+print((5<4) and (4<3))
+print((x<=7) or (x>=3))
+print((5<4) or (7>4))
+print((5<4) or (7>999))
