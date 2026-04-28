@@ -1,0 +1,69 @@
+[
+  {
+    "name": "Alan",
+    "email": "alan@",
+    "birthday": "2007-07-07",
+    "group": "Family",
+    "phones": []
+  },
+  {
+    "name": "Butcher",
+    "email": "suchomelander@",
+    "birthday": "1976-06-06",
+    "group": "Friends",
+    "phones": [
+      {
+        "phone": "+6-666-666-6666",
+        "type": "mobile"
+      }
+    ]
+  },
+  {
+    "name": "Mark",
+    "email": "invincible@",
+    "birthday": "2004-09-06",
+    "group": "Family",
+    "phones": [
+      {
+        "phone": "+1-158-487-4546",
+        "type": "mobile"
+      }
+    ]
+  },
+  {
+    "name": "Nurtu",
+    "email": "nurtu",
+    "birthday": "2008-06-06",
+    "group": "Family",
+    "phones": [
+      {
+        "phone": "+7-747-104-8740",
+        "type": "mobile"
+      }
+    ]
+  },
+  {
+    "name": "Nurtugan",
+    "email": "nurtu@",
+    "birthday": null,
+    "group": "Other",
+    "phones": [
+      {
+        "phone": "+7-747-104-8740",
+        "type": "mobile"
+      }
+    ]
+  },
+  {
+    "name": "Ulan",
+    "email": "invincible@",
+    "birthday": "2007-09-06",
+    "group": "Family",
+    "phones": [
+      {
+        "phone": "+1-158-487-4546",
+        "type": "mobile"
+      }
+    ]
+  }
+]
