@@ -64,7 +64,7 @@ def create_tables():
         """)
         conn.commit()
 
-# ================= HELPERS =================
+# группа
 
 def get_or_create_group(name: str):
     name = (name or "Other").strip()
@@ -88,7 +88,7 @@ def safe_date(value: str):
         print("Invalid date format. Use YYYY-MM-DD. Skipped.")
         return None
 
-# ================= CONTACT + PHONE (объединённое добавление) =================
+#CONTACT + PHONE (объединённое добавление)
 
 def add_contact():
     """Добавляет контакт и сразу предлагает добавить телефоны."""
@@ -118,7 +118,7 @@ def add_contact():
 
     print(f"Contact '{name}' saved.")
 
-    # --- сразу добавляем телефоны ---
+    # просит добавить номер (да нет)
     while True:
         add_more = input("Add phone number? (y/n): ").strip().lower()
         if add_more != "y":
@@ -139,7 +139,7 @@ def add_contact():
             conn.commit()
         print(f"  Phone {phone} ({ptype}) added.")
 
-# ================= ДОБАВИТЬ ТЕЛЕФОН К СУЩЕСТВУЮЩЕМУ КОНТАКТУ =================
+#ДОБАВИТЬ ТЕЛЕФОН К СУЩЕСТВУЮЩЕМУ КОНТАКТУ
 
 def add_phone():
     name  = input("Contact name: ").strip()
@@ -162,7 +162,7 @@ def add_phone():
         conn.commit()
     print("Phone added.")
 
-# ================= УДАЛЕНИЕ =================
+# УДАЛЕНИЕ 
 
 def delete_contact():
     name = input("Contact name to delete: ").strip()
@@ -242,7 +242,7 @@ def delete_phone():
         conn.commit()
     print(f"Phone {ph} ({pt}) deleted.")
 
-# ================= SEARCH =================
+# Поиск
 
 def search_contacts(query):
     with conn.cursor() as cur:
@@ -258,7 +258,7 @@ def search_contacts(query):
         """, (f"%{query}%",) * 3)
         return cur.fetchall()
 
-# ================= ПОЛНЫЙ СПИСОК (contacts + phones + groups) =================
+# ПОЛНЫЙ СПИСОК 
 
 def list_all():
     """Выводит все контакты вместе с телефонами и группами в читаемом виде."""
@@ -297,7 +297,7 @@ def list_all():
             f"{str(birthday or '—'):<12} {str(added):<12} {phones}"
         )
 
-# ================= FILTER =================
+# Фильтор по группам
 
 def filter_by_group():
     g = input("Group: ").strip()
@@ -310,7 +310,7 @@ def filter_by_group():
         """, (g,))
         return cur.fetchall()
 
-# ================= PAGINATION =================
+# просматривать постранично
 
 def browse_contacts():
     allowed_sort = {"name": "name", "birthday": "birthday", "created_at": "created_at"}
@@ -345,7 +345,7 @@ def browse_contacts():
         elif cmd == "q":
             break
 
-# ================= JSON =================
+# JSON
 
 def export_json():
     """
