@@ -1,7 +1,0 @@
-print("hello")
-a = int(input())
-b = input()
-print (a*b)
-print ("i love you")
-print("HELLLLLOOOOOlfeffr")
-print("Hello")
