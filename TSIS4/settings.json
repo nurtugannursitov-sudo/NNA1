@@ -1,0 +1,21 @@
+{
+    "snake_color": {
+        "head": [
+            214,
+            0,
+            255
+        ],
+        "body": [
+            0,
+            255,
+            0
+        ],
+        "dark_body": [
+            255,
+            0,
+            0
+        ]
+    },
+    "grid_overlay": true,
+    "sound": true
+}

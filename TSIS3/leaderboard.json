@@ -9,6 +9,14 @@
   },
   {
     "name": "Player",
+    "score": 317,
+    "distance": 17,
+    "coins": 19,
+    "level": 2,
+    "date": "2026-05-01 14:01"
+  },
+  {
+    "name": "Player",
     "score": 23,
     "distance": 3,
     "coins": 2,
