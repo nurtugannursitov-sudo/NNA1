@@ -1,68 +1,6 @@
-import psycopg2
-import csv
-import json
 from datetime import datetime
+from db import conn
 
-# ================= CONFIG =================
-DB_CONFIG = {
-    "host": "localhost",
-    "database": "phonebook",
-    "user": "postgres",
-    "password": "postgres"
-}
-
-conn = psycopg2.connect(**DB_CONFIG)
-conn.autocommit = False
-
-# ================= DB SETUP =================
-
-def create_tables():
-    with conn.cursor() as cur:
-        cur.execute("""
-        CREATE TABLE IF NOT EXISTS groups (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(50) UNIQUE
-        );
-
-        CREATE TABLE IF NOT EXISTS contacts (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(255) UNIQUE NOT NULL,
-            email VARCHAR(255),
-            birthday DATE,
-            group_id INTEGER REFERENCES groups(id),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS phones (
-            id SERIAL PRIMARY KEY,
-            contact_id INTEGER REFERENCES contacts(id) ON DELETE CASCADE,
-            phone VARCHAR(20),
-            type VARCHAR(10) CHECK (type IN ('home','work','mobile'))
-        );
-        """)
-
-        # ── VIEW: объединяет все три таблицы ──────────────────────────────────
-        # В pgAdmin / psql: SELECT * FROM phonebook_view;
-        cur.execute("""
-        CREATE OR REPLACE VIEW phonebook_view AS
-        SELECT
-            c.id,
-            c.name,
-            c.email,
-            c.birthday,
-            COALESCE(g.name, 'Other')                                      AS grp,
-            COALESCE(
-                string_agg(p.phone || ' (' || p.type || ')', ', '
-                           ORDER BY p.type),
-                NULL
-            )                                                               AS phones,
-            c.created_at
-        FROM contacts c
-        LEFT JOIN groups g ON c.group_id = g.id
-        LEFT JOIN phones p ON c.id       = p.contact_id
-        GROUP BY c.id, c.name, c.email, c.birthday, g.name, c.created_at;
-        """)
-        conn.commit()
 
 # ================= HELPERS =================
 
@@ -88,7 +26,8 @@ def safe_date(value: str):
         print("Invalid date format. Use YYYY-MM-DD. Skipped.")
         return None
 
-# ================= CONTACT + PHONE (объединённое добавление) =================
+
+# ================= ADD =================
 
 def add_contact():
     """Добавляет контакт и сразу предлагает добавить телефоны."""
@@ -118,7 +57,6 @@ def add_contact():
 
     print(f"Contact '{name}' saved.")
 
-    # --- сразу добавляем телефоны ---
     while True:
         add_more = input("Add phone number? (y/n): ").strip().lower()
         if add_more != "y":
@@ -139,9 +77,9 @@ def add_contact():
             conn.commit()
         print(f"  Phone {phone} ({ptype}) added.")
 
-# ================= ДОБАВИТЬ ТЕЛЕФОН К СУЩЕСТВУЮЩЕМУ КОНТАКТУ =================
 
 def add_phone():
+    """Добавляет телефон к существующему контакту."""
     name  = input("Contact name: ").strip()
     phone = input("Phone: ").strip()
     ptype = input("Type (home/work/mobile): ").strip().lower()
@@ -162,7 +100,8 @@ def add_phone():
         conn.commit()
     print("Phone added.")
 
-# ================= УДАЛЕНИЕ =================
+
+# ================= DELETE =================
 
 def delete_contact():
     name = input("Contact name to delete: ").strip()
@@ -179,7 +118,6 @@ def delete_contact():
 
         contact_id, email = row
 
-        # показываем что будет удалено
         cur.execute("SELECT phone, type FROM phones WHERE contact_id=%s", (contact_id,))
         phones = cur.fetchall()
 
@@ -196,7 +134,6 @@ def delete_contact():
             print("Cancelled.")
             return
 
-        # телефоны удалятся каскадно (ON DELETE CASCADE)
         cur.execute("DELETE FROM contacts WHERE id=%s", (contact_id,))
         conn.commit()
 
@@ -242,7 +179,8 @@ def delete_phone():
         conn.commit()
     print(f"Phone {ph} ({pt}) deleted.")
 
-# ================= SEARCH =================
+
+# ================= SEARCH / LIST =================
 
 def search_contacts(query):
     with conn.cursor() as cur:
@@ -258,7 +196,6 @@ def search_contacts(query):
         """, (f"%{query}%",) * 3)
         return cur.fetchall()
 
-# ================= ПОЛНЫЙ СПИСОК (contacts + phones + groups) =================
 
 def list_all():
     """Выводит все контакты вместе с телефонами и группами в читаемом виде."""
@@ -286,7 +223,6 @@ def list_all():
         print("No contacts found.")
         return
 
-    # заголовок таблицы
     header = f"{'Name':<25} {'Group':<12} {'Email':<25} {'Birthday':<12} {'Added':<12} Phones"
     print("\n" + header)
     print("-" * len(header) + "-" * 20)
@@ -297,7 +233,6 @@ def list_all():
             f"{str(birthday or '—'):<12} {str(added):<12} {phones}"
         )
 
-# ================= FILTER =================
 
 def filter_by_group():
     g = input("Group: ").strip()
@@ -310,7 +245,6 @@ def filter_by_group():
         """, (g,))
         return cur.fetchall()
 
-# ================= PAGINATION =================
 
 def browse_contacts():
     allowed_sort = {"name": "name", "birthday": "birthday", "created_at": "created_at"}
@@ -344,106 +278,3 @@ def browse_contacts():
             page -= 1
         elif cmd == "q":
             break
-
-# ================= JSON =================
-
-def export_json():
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT c.name, c.email, c.birthday, g.name, p.phone, p.type
-        FROM contacts c
-        LEFT JOIN groups g ON c.group_id = g.id
-        LEFT JOIN phones p ON c.id       = p.contact_id
-        """)
-        data = cur.fetchall()
-
-    with open("contacts.json", "w") as f:
-        json.dump(data, f, default=str)
-    print("Exported to contacts.json")
-
-
-def import_json():
-    with open("contacts.json") as f:
-        data = json.load(f)
-
-    for row in data:
-        name, email, birthday, group, phone, ptype = row
-
-        with conn.cursor() as cur:
-            cur.execute("SELECT id FROM contacts WHERE name=%s", (name,))
-            exists = cur.fetchone()
-
-            if exists:
-                choice = input(f"{name} exists (skip/overwrite): ")
-                if choice == "skip":
-                    continue
-                cur.execute("DELETE FROM contacts WHERE name=%s", (name,))
-
-            gid = get_or_create_group(group)
-            cur.execute(
-                "INSERT INTO contacts(name,email,birthday,group_id) VALUES(%s,%s,%s,%s) RETURNING id",
-                (name, email, birthday, gid)
-            )
-            cid = cur.fetchone()[0]
-            cur.execute("INSERT INTO phones(contact_id,phone,type) VALUES(%s,%s,%s)",
-                        (cid, phone, ptype))
-            conn.commit()
-
-# ================= CSV =================
-
-def import_csv():
-    file = input("CSV file: ")
-    with open(file) as f:
-        reader = csv.DictReader(f)
-        for r in reader:
-            gid = get_or_create_group(r['group'])
-
-            with conn.cursor() as cur:
-                cur.execute(
-                    "INSERT INTO contacts(name,email,birthday,group_id) VALUES(%s,%s,%s,%s) RETURNING id",
-                    (r['name'], r['email'], safe_date(r['birthday']), gid)
-                )
-                cid = cur.fetchone()[0]
-                cur.execute("INSERT INTO phones(contact_id,phone,type) VALUES(%s,%s,%s)",
-                            (cid, r['phone'], r['type']))
-                conn.commit()
-
-# ================= MENU =================
-
-def main():
-    create_tables()
-
-    while True:
-        print("""
-1  Add contact (+ phones at once)
-2  Add phone to existing contact
-3  Delete contact
-4  Delete phone number
-5  Search
-6  Filter by group
-7  Browse (pagination)
-8  List ALL contacts with phones & groups
-9  Export JSON
-10 Import JSON
-11 Import CSV
-0  Exit
-""")
-        c = input("Choice: ")
-
-        if   c == "1":  add_contact()
-        elif c == "2":  add_phone()
-        elif c == "3":  delete_contact()
-        elif c == "4":  delete_phone()
-        elif c == "5":  print(search_contacts(input("Search: ")))
-        elif c == "6":  print(filter_by_group())
-        elif c == "7":  browse_contacts()
-        elif c == "8":  list_all()
-        elif c == "9":  export_json()
-        elif c == "10": import_json()
-        elif c == "11": import_csv()
-        elif c == "0":  break
-
-    conn.close()
-
-if __name__ == "__main__":
-    main()
