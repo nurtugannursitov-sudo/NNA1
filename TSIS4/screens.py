@@ -1,5 +1,5 @@
 """
-SNAKE GAME - UI Screens
+ UI Screens
 Contains: Button, MainMenu, UsernameScreen, LeaderboardScreen, SettingsScreen, GameOverScreen
 """
 

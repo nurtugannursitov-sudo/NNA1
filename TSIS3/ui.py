@@ -1,4 +1,4 @@
-# ui.py — UI-элементы и все экраны (меню, настройки, таблица лидеров, game over)
+#все экраны (меню, настройки, таблица лидеров, game over)
 
 import pygame
 from constants import (
@@ -13,9 +13,8 @@ from constants import (
 )
 
 
-# ─────────────────────────────────────────────
 # Базовые виджеты
-# ─────────────────────────────────────────────
+
 
 class Button:
     """Обычная кнопка"""
@@ -165,9 +164,100 @@ class DifficultySelector:
             self.selected_index = self.difficulties.index(name)
 
 
-# ─────────────────────────────────────────────
 # Экраны
-# ─────────────────────────────────────────────
+
+
+def show_name_input_screen():
+    """
+    Экран ввода имени игрока перед началом игры.
+    Возвращает строку с именем или None если нажат BACK.
+    """
+    settings     = load_settings()
+    current_name = settings.get('player_name', '')
+    input_text   = current_name if current_name != 'Player' else ''
+    active       = True  # поле всегда активно
+
+    confirm_btn = Button(WIDTH // 2 - 100, 370, 200, 55, "PLAY!", GREEN, LIME_GREEN)
+    back_btn    = Button(WIDTH // 2 - 100, 445, 200, 45, "BACK",  GRAY,  LIGHT_GRAY, font_size=28)
+
+    cursor_visible = True
+    cursor_timer   = 0
+
+    while True:
+        screen.fill(BLACK)
+
+        # Заголовок
+        title = large_font.render("ENTER YOUR NAME", True, GOLD)
+        screen.blit(title, title.get_rect(centerx=WIDTH // 2, y=80))
+
+        hint = small_font.render("Type your name and press PLAY! or Enter", True, LIGHT_GRAY)
+        screen.blit(hint, hint.get_rect(centerx=WIDTH // 2, y=145))
+
+        # Поле ввода
+        field_rect = pygame.Rect(WIDTH // 2 - 200, 200, 400, 60)
+        pygame.draw.rect(screen, DARK_GRAY, field_rect, border_radius=10)
+        pygame.draw.rect(screen, CYAN if active else GRAY, field_rect, 2, border_radius=10)
+
+        display_text = input_text if input_text else ''
+        cursor_str   = '|' if (cursor_visible and active) else ''
+        name_surf    = font.render(display_text + cursor_str, True, WHITE)
+        screen.blit(name_surf, name_surf.get_rect(center=field_rect.center))
+
+        if not input_text:
+            placeholder = font.render("Player", True, GRAY)
+            screen.blit(placeholder, placeholder.get_rect(center=field_rect.center))
+
+        confirm_btn.draw(screen)
+        back_btn.draw(screen)
+
+        # Подсказка максимальной длины
+        len_hint = tiny_font.render(f"{len(input_text)}/16", True, LIGHT_GRAY)
+        screen.blit(len_hint, (WIDTH // 2 + 205, 225))
+
+        pygame.display.flip()
+
+        # Мигание курсора
+        cursor_timer += 1
+        if cursor_timer >= 30:
+            cursor_visible = not cursor_visible
+            cursor_timer   = 0
+
+        clock.tick(60)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return None
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    name = input_text.strip() or 'Player'
+                    _save_name(name)
+                    return name
+                elif event.key == pygame.K_BACKSPACE:
+                    input_text = input_text[:-1]
+                elif event.key == pygame.K_ESCAPE:
+                    return None
+                else:
+                    if len(input_text) < 16:
+                        char = event.unicode
+                        if char.isprintable() and char:
+                            input_text += char
+
+            if confirm_btn.handle_event(event):
+                name = input_text.strip() or 'Player'
+                _save_name(name)
+                return name
+
+            if back_btn.handle_event(event):
+                return None
+
+
+def _save_name(name):
+    """Сохраняет имя игрока в настройки"""
+    settings = load_settings()
+    settings['player_name'] = name
+    save_settings(settings)
+
 
 def show_main_menu():
     """Главное меню → возвращает 'play' | 'leaderboard' | 'settings' | 'quit'"""
@@ -200,7 +290,10 @@ def show_main_menu():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "quit"
-            if play_btn.handle_event(event):   return "play"
+            if play_btn.handle_event(event):
+                name = show_name_input_screen()
+                if name:   return "play"
+                # если нажали BACK — остаёмся в меню
             if lb_btn.handle_event(event):     return "leaderboard"
             if sets_btn.handle_event(event):   return "settings"
             if quit_btn.handle_event(event):   return "quit"

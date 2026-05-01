@@ -28,12 +28,21 @@
     "email": "doue@",
     "birthday": "2005-06-05",
     "group": "Family",
-    "phones": []
+    "phones": [
+      {
+        "phone": "+2084",
+        "type": "home"
+      },
+      {
+        "phone": "+7 789 874 5784",
+        "type": "work"
+      }
+    ]
   },
   {
     "name": "Mark",
     "email": "invincible@",
-    "birthday": "2004-09-06",
+    "birthday": "2007-09-06",
     "group": "Family",
     "phones": [
       {

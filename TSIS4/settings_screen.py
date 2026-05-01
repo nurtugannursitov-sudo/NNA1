@@ -1,5 +1,5 @@
 """
-Settings Screen - Customize game preferences with improved UI (Task 3.6)
+Customize game preferences with improved UI 
 """
 
 import pygame

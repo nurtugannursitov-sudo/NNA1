@@ -1,5 +1,5 @@
 """
-Main Menu Screen - Navigation hub for the game (Task 3.6)
+ Navigation hub for the game 
 """
 
 import pygame

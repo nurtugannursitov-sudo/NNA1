@@ -4,7 +4,7 @@ from db import conn
 from contacts import get_or_create_group, safe_date
 
 
-# ================= JSON =================
+# JSON
 
 def export_json():
     """Экспортирует контакты в contacts.json."""
@@ -94,7 +94,7 @@ def import_json():
     print(f"Import done: {imported} imported, {skipped} skipped.")
 
 
-# ================= CSV =================
+#CSV 
 
 def import_csv():
     file = input("CSV file: ").strip()

@@ -2,7 +2,7 @@ from datetime import datetime
 from db import conn
 
 
-# ================= HELPERS =================
+#HELPERS
 
 def get_or_create_group(name: str):
     name = (name or "Other").strip()
@@ -27,8 +27,7 @@ def safe_date(value: str):
         return None
 
 
-# ================= ADD =================
-
+#ADD
 def add_contact():
     """Добавляет контакт и сразу предлагает добавить телефоны."""
     name = input("Name: ").strip()
@@ -101,7 +100,7 @@ def add_phone():
     print("Phone added.")
 
 
-# ================= DELETE =================
+# DELETE 
 
 def delete_contact():
     name = input("Contact name to delete: ").strip()
@@ -180,7 +179,7 @@ def delete_phone():
     print(f"Phone {ph} ({pt}) deleted.")
 
 
-# ================= SEARCH / LIST =================
+#SEARCH / LIST 
 
 def search_contacts(query):
     with conn.cursor() as cur:

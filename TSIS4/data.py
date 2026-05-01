@@ -1,5 +1,5 @@
 """
-SNAKE GAME - Data Layer
+Data Layer
 Contains: SettingsManager, Database
 """
 

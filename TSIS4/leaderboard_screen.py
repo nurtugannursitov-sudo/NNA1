@@ -1,5 +1,5 @@
 """
-Leaderboard Screen - Displays top scores with table format (Task 3.6)
+Displays top scores with table format (Task 3.6)
 """
 
 import pygame

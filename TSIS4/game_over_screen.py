@@ -1,5 +1,5 @@
 """
-Game Over Screen - Shows final stats and provides retry options (Task 3.6)
+Shows final stats and provides retry options (Task 3.6)
 """
 
 import pygame

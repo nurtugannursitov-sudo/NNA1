@@ -1,18 +1,18 @@
 import psycopg2
 
-# ================= CONFIG =================
+#CONFIG
 DB_CONFIG = {
     "host": "localhost",
     "database": "phonebook",
     "user": "postgres",
-    "password": "postgres"
+    "password": "12345"
 }
 
 conn = psycopg2.connect(**DB_CONFIG)
 conn.autocommit = False
 
 
-# ================= DB SETUP =================
+# DB SETUP 
 
 def create_tables():
     with conn.cursor() as cur:

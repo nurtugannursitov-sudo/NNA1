@@ -12,6 +12,12 @@
         "timestamp": "2026-05-01 14:03:52"
     },
     {
+        "username": "HHH",
+        "score": 6,
+        "level": 1,
+        "timestamp": "2026-05-01 18:48:21"
+    },
+    {
         "username": "NNA",
         "score": 5,
         "level": 1,
@@ -40,5 +46,11 @@
         "score": -1,
         "level": 1,
         "timestamp": "2026-05-01 14:02:09"
+    },
+    {
+        "username": "HHH",
+        "score": -1,
+        "level": 1,
+        "timestamp": "2026-05-01 18:47:48"
     }
 ]

@@ -1,5 +1,5 @@
 """
-SNAKE GAME - Constants and Configuration
+ Constants and Configuration
 """
 
 # Screen settings

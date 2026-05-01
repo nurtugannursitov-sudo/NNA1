@@ -20,7 +20,7 @@ from entities import Snake, Food, PowerUp, ObstacleManager, EffectManager
 from screens import Button, MainMenu, UsernameScreen, LeaderboardScreen, SettingsScreen, GameOverScreen
 
 
-# ========== MAIN GAME CLASS ==========
+# MAIN GAME CLASS
 class Game:
     def __init__(self, username, settings):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -198,7 +198,7 @@ class Game:
         return True
 
 
-# ========== MAIN FUNCTION ==========
+#  MAIN FUNCTION 
 def main():
     pygame.init()
 

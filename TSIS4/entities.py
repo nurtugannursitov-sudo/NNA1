@@ -1,5 +1,5 @@
 """
-SNAKE GAME - Game Entities
+ Game Entities
 Contains: Snake, Food, PowerUp, ObstacleManager, EffectManager
 """
 

@@ -1,5 +1,3 @@
-# main.py — Точка входа. Класс Game и главный цикл.
-
 import pygame
 import sys
 import random
@@ -49,7 +47,7 @@ class Game:
 
         self._start_new_game()
 
-    # ── Инициализация ────────────────────────────────────
+    # Инициализация 
 
     def _start_new_game(self):
         self.player       = Player(self.car_color)
@@ -85,7 +83,7 @@ class Game:
         self.power_ups.append(
             PowerUp(self.player, self.power_ups))
 
-    # ── Подсчёт очков ────────────────────────────────────
+    #  Подсчёт очков 
 
     def _calculate_score(self):
         dist_score   = (self.distance_traveled // 60) * POINTS_PER_METER
@@ -101,7 +99,7 @@ class Game:
         )
         return self.score
 
-    # ── Ввод ─────────────────────────────────────────────
+    #Ввод 
 
     def _handle_input(self):
         for event in pygame.event.get():
@@ -110,7 +108,7 @@ class Game:
         self.player.move(pygame.key.get_pressed())
         return True
 
-    # ── Обновление состояния ─────────────────────────────
+    #Обновление состояния 
 
     def _update(self):
         if not self.game_active:
@@ -227,7 +225,7 @@ class Game:
             elif coin.off_screen():
                 self.coins.remove(coin)
 
-    # ── Отрисовка ────────────────────────────────────────
+    # Отрисовка 
 
     def _draw(self):
         draw_road()
@@ -273,7 +271,7 @@ class Game:
             surf = tiny_font.render(text, True, color)
             screen.blit(surf, (px + 10, py + 10 + i * 22))
 
-    # ── Главный цикл сессии ──────────────────────────────
+    # Главный цикл сессии 
 
     def run(self):
         while self.game_active:
@@ -294,9 +292,8 @@ class Game:
         )
 
 
-# ─────────────────────────────────────────────
+
 # Точка входа
-# ─────────────────────────────────────────────
 
 def main():
     settings       = load_settings()
@@ -310,6 +307,8 @@ def main():
                 break
             elif action == "play":
                 current_screen = "game"
+                # Перечитываем настройки — имя могло измениться на экране ввода
+                settings = load_settings()
             elif action == "leaderboard":
                 show_leaderboard_screen()
             elif action == "settings":

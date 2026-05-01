@@ -1,5 +1,5 @@
 """
-Username Input Screen - Enter player name before starting
+Enter player name before starting
 """
 
 import pygame

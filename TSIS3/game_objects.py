@@ -1,4 +1,4 @@
-# game_objects.py — Игровые объекты: Player, TrafficCar, RoadObstacle, Coin, PowerUp
+#Игровые объекты: Player, TrafficCar, RoadObstacle, Coin, PowerUp
 
 import pygame
 import random
@@ -15,9 +15,7 @@ from constants import (
 )
 
 
-# ─────────────────────────────────────────────
 # Вспомогательные функции
-# ─────────────────────────────────────────────
 
 def draw_road():
     """Отрисовка дороги и разметки"""
@@ -49,9 +47,8 @@ def check_overlap(new_rect, existing_objects, min_distance=50):
     return False
 
 
-# ─────────────────────────────────────────────
+
 # Power-Up
-# ─────────────────────────────────────────────
 
 class PowerUp:
     """Усиления: Nitro, Shield, Repair"""
@@ -115,9 +112,7 @@ class PowerUp:
         return self.y > HEIGHT + 50 or self.lifetime <= 0
 
 
-# ─────────────────────────────────────────────
 # Player
-# ─────────────────────────────────────────────
 
 class Player:
     def __init__(self, car_color=RED):
@@ -266,9 +261,8 @@ class Player:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
 
-# ─────────────────────────────────────────────
+
 # TrafficCar
-# ─────────────────────────────────────────────
 
 class TrafficCar:
     def __init__(self, speed_multiplier=1.0, player=None, existing_objects=None):
@@ -306,9 +300,8 @@ class TrafficCar:
         return self.y > HEIGHT + 50
 
 
-# ─────────────────────────────────────────────
 # RoadObstacle
-# ─────────────────────────────────────────────
+
 
 class RoadObstacle:
     _TYPES = {
@@ -375,9 +368,9 @@ class RoadObstacle:
         return self.y > HEIGHT + 50
 
 
-# ─────────────────────────────────────────────
+
 # Coin
-# ─────────────────────────────────────────────
+
 
 class Coin:
     def __init__(self, player=None, existing_objects=None):
