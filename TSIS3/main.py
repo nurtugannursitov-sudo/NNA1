@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-
+pygame.mixer.init()
 from constants import (
     screen, clock,
     WIDTH, HEIGHT, LEFT_BOUNDARY, RIGHT_BOUNDARY,
@@ -292,12 +292,47 @@ class Game:
         )
 
 
+def play_background_music(settings):
+    """Фондық музыканы ойнату / Запуск фоновой музыки"""
+    if not settings.get("sound", True):
+        pygame.mixer.music.stop()
+        return
 
+    try:
+        import os
+
+        # music_volume хранится как 0–100, pygame ожидает 0.0–1.0
+        raw_volume = settings.get("music_volume", 50)
+        volume = raw_volume / 100.0 if raw_volume > 1 else float(raw_volume)
+        pygame.mixer.music.set_volume(max(0.0, min(1.0, volume)))
+
+        # Ищем музыкальный файл в нескольких форматах
+        music_paths = [
+            "assets/music.mp3",
+            "assets/music.ogg",
+            "assets/music.wav",
+        ]
+        for path in music_paths:
+            if os.path.exists(path):
+                pygame.mixer.music.load(path)
+                pygame.mixer.music.play(-1)   # -1 = бесконечный повтор
+                return
+
+        print("Background music: no music file found in assets/")
+    except Exception as e:
+        print(f"Music error: {e}")
+
+def stop_music():
+    """Музыканы тоқтату"""
+    pygame.mixer.music.stop()
 # Точка входа
 
 def main():
     settings       = load_settings()
     current_screen = "menu"
+
+    # Запускаем фоновую музыку сразу при старте игры
+    play_background_music(settings)
 
     while True:
         if current_screen == "menu":
@@ -317,6 +352,8 @@ def main():
                     settings.update(new_settings)
                     # Перечитываем с диска чтобы иметь актуальные данные
                     settings = load_settings()
+                    # Применяем изменения звука сразу (вкл/выкл, громкость)
+                    play_background_music(settings)
 
         elif current_screen == "game":
             game   = Game(settings)

@@ -7,6 +7,12 @@
     },
     {
         "username": "NNA",
+        "score": 14,
+        "level": 2,
+        "timestamp": "2026-05-02 01:17:41"
+    },
+    {
+        "username": "NNA",
         "score": 12,
         "level": 2,
         "timestamp": "2026-05-01 14:03:52"
@@ -30,6 +36,12 @@
         "timestamp": "2026-05-01 14:01:57"
     },
     {
+        "username": "NNA",
+        "score": 4,
+        "level": 1,
+        "timestamp": "2026-05-02 02:01:59"
+    },
+    {
         "username": "\u0414\u0414\u0414",
         "score": 3,
         "level": 1,
@@ -40,6 +52,12 @@
         "score": 1,
         "level": 1,
         "timestamp": "2026-05-01 14:02:03"
+    },
+    {
+        "username": "NNA",
+        "score": 1,
+        "level": 1,
+        "timestamp": "2026-05-02 02:02:15"
     },
     {
         "username": "NNA",

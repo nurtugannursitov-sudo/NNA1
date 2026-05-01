@@ -198,12 +198,48 @@ class Game:
         return True
 
 
+# MUSIC FUNCTIONS
+def play_background_music(settings):
+    """Запуск фоновой музыки / Background music player"""
+    if not settings.get_sound():
+        pygame.mixer.music.stop()
+        return
+
+    try:
+        import os
+
+        # Ищем музыкальный файл в нескольких форматах
+        music_paths = [
+            "assets/music.mp3",
+            "assets/music.ogg",
+            "assets/music.wav",
+        ]
+        for path in music_paths:
+            if os.path.exists(path):
+                pygame.mixer.music.set_volume(0.5)   # громкость 50%
+                pygame.mixer.music.load(path)
+                pygame.mixer.music.play(-1)           # -1 = бесконечный повтор
+                return
+
+        print("Background music: no music file found in assets/")
+    except Exception as e:
+        print(f"Music error: {e}")
+
+
+def stop_music():
+    """Остановить музыку"""
+    pygame.mixer.music.stop()
+
+
 #  MAIN FUNCTION 
 def main():
     pygame.init()
 
     settings = SettingsManager()
     db = Database()
+
+    pygame.mixer.init()
+    play_background_music(settings)   # запускаем музыку сразу при старте
 
     username = None
     running = True
@@ -328,6 +364,7 @@ def main():
                     if action == "save":
                         in_settings = False
                         screen_state = "menu"
+                        play_background_music(settings)   # применяем вкл/выкл сразу
 
                 settings_screen.draw()
                 pygame.time.Clock().tick(60)
