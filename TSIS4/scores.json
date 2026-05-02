@@ -1,5 +1,11 @@
 [
     {
+        "username": "JJJ",
+        "score": 28,
+        "level": 3,
+        "timestamp": "2026-05-02 06:26:11"
+    },
+    {
         "username": "\u041f\u041f\u0420",
         "score": 21,
         "level": 3,
@@ -58,6 +64,12 @@
         "score": 1,
         "level": 1,
         "timestamp": "2026-05-02 02:02:15"
+    },
+    {
+        "username": "JJJ",
+        "score": 0,
+        "level": 1,
+        "timestamp": "2026-05-02 06:26:35"
     },
     {
         "username": "NNA",
